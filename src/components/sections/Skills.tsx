@@ -20,14 +20,13 @@ export function Skills() {
   const allIcons = skillCategories.flatMap((c) => c.skills).filter((s) => s.icon);
 
   return (
-    <section id="skills" className="relative overflow-hidden bg-bg-2/60 py-28 sm:py-40">
+    <section id="skills" className="relative overflow-hidden py-28 sm:py-40">
       <div className="container-page">
         <SectionHeading
-          index="02"
           label="Skills"
           title="Tools I build with."
           description="The languages, frameworks and tools I use across my projects."
-          align="split"
+          align="center"
         />
       </div>
 
@@ -40,9 +39,9 @@ export function Skills() {
           {[...allIcons, ...allIcons].map((s, i) => (
             <span
               key={i}
-              className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-full border border-line bg-bg px-4 py-2.5 font-mono text-xs text-muted"
+              className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-full bg-bg-2 px-5 py-3 text-[15px] font-medium text-muted"
             >
-              <BrandIcon name={s.icon!} className="size-4 text-fg" />
+              <BrandIcon name={s.icon!} className="size-[18px] text-fg" />
               {s.name}
             </span>
           ))}

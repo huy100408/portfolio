@@ -85,7 +85,6 @@ export function Projects() {
     <section id="projects" ref={root} className="relative py-28 sm:py-40 lg:pb-0">
       <div className="container-page">
         <SectionHeading
-          index="03"
           label="Projects"
           title="Selected work."
           description={
@@ -126,7 +125,7 @@ export function Projects() {
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              "group flex flex-col justify-between rounded-2xl border border-dashed border-line-strong p-7 transition-colors hover:border-fg hover:bg-bg-2",
+              "spotlight group flex flex-col justify-between rounded-tile bg-bg-2 p-8 transition-transform duration-700 ease-out-expo hover:-translate-y-1",
               horizontal ? "w-[min(340px,26vw)] shrink-0" : "min-h-56",
             )}
             variants={fadeUp}
@@ -137,8 +136,8 @@ export function Projects() {
           >
             <BrandIcon name="github" className="size-8" />
             <div>
-              <p className="text-2xl font-semibold tracking-[-0.03em]">More on GitHub</p>
-              <p className="mt-2 inline-flex items-center gap-1 text-muted transition-colors group-hover:text-fg">
+              <p className="text-[28px] font-semibold tracking-[-0.02em]">More on GitHub</p>
+              <p className="mt-2 inline-flex items-center gap-1 text-[17px] text-accent">
                 github.com/{site.github.username}
                 <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </p>
@@ -148,10 +147,10 @@ export function Projects() {
         </div>
 
         {horizontal && (
-          <div className="container-page mt-10 flex items-center gap-4 font-mono text-xs text-muted">
+          <div className="container-page mt-10 flex items-center gap-4 text-[12px] font-medium text-muted">
             <span>Scroll</span>
-            <div className="h-px flex-1 bg-line">
-              <div data-progress className="h-px origin-left scale-x-0 bg-fg" />
+            <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-bg-3">
+              <div data-progress className="h-full origin-left scale-x-0 rounded-full bg-[linear-gradient(90deg,var(--brand-1),var(--brand-2),var(--brand-3))]" />
             </div>
             <span className="tabular-nums">{String(projects.length).padStart(2, "0")} projects</span>
           </div>

@@ -31,7 +31,7 @@ const snapshot = getSnapshot();
 /* ---------------------------------------------------------------- pieces */
 
 function Panel({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <div className={cn("rounded-2xl border border-line bg-bg p-5 sm:p-6", className)}>{children}</div>;
+  return <div className={cn("spotlight rounded-tile bg-bg-2 p-6 sm:p-7", className)}>{children}</div>;
 }
 
 function Skeleton({ className }: { className?: string }) {
@@ -60,7 +60,7 @@ function StatusBadge({ status, data }: { status: Status; data: GitHubData | null
     text = "Unavailable";
   }
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-line bg-bg px-3 py-1.5 font-mono text-[11px] text-muted">
+    <span className="inline-flex items-center gap-2 rounded-full bg-bg-2 px-3.5 py-1.5 text-[12px] font-medium text-muted">
       <span className={cn("size-1.5 rounded-full", dot)} />
       {text}
     </span>
@@ -114,7 +114,7 @@ function ActivityGrid({ days }: { days: Record<string, number> }) {
 
 /* ---------------------------------------------------------------- section */
 
-export function GitHub({ index = "04" }: { index?: string }) {
+export function GitHub() {
   const root = useRef<HTMLElement>(null);
   const mounted = useMounted();
   const [data, setData] = useState<GitHubData | null>(snapshot);
@@ -163,10 +163,10 @@ export function GitHub({ index = "04" }: { index?: string }) {
   const totalLang = data?.languages.reduce((n, l) => n + l.count, 0) ?? 0;
 
   return (
-    <section id="github" ref={root} className="relative bg-bg-2/60 py-28 sm:py-40">
-      <div className="container-page">
+    <section id="github" ref={root} data-nav-theme="dark" className="dark relative overflow-hidden bg-bg py-28 text-fg sm:py-40">
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[40rem] bg-[radial-gradient(60%_50%_at_50%_0%,rgb(41_151_255/0.14),transparent)]" />
+      <div className="container-page relative">
         <SectionHeading
-          index={index}
           label="GitHub"
           title="Open source, live."
           description="Public repositories and activity, pulled straight from the GitHub API."
@@ -181,7 +181,7 @@ export function GitHub({ index = "04" }: { index?: string }) {
               type="button"
               onClick={() => load(true)}
               disabled={status.state === "loading"}
-              className="inline-flex h-9 items-center gap-2 rounded-full border border-line bg-bg px-3.5 text-sm font-medium transition-colors hover:border-line-strong disabled:opacity-50"
+              className="inline-flex h-9 items-center gap-2 rounded-full bg-bg-2 px-4 text-sm font-medium transition-colors hover:bg-bg-3 disabled:opacity-50"
             >
               <RefreshCw className={cn("size-3.5", status.state === "loading" && "animate-spin")} />
               Refresh
@@ -190,7 +190,7 @@ export function GitHub({ index = "04" }: { index?: string }) {
               href={site.github.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-9 items-center gap-2 rounded-full bg-fg px-4 text-sm font-medium text-bg"
+              className="inline-flex h-9 items-center gap-2 rounded-full bg-cta px-4 text-sm font-medium text-white transition-colors hover:bg-cta-hover"
             >
               <BrandIcon name="github" className="size-3.5" /> View profile
               <span className="sr-only">(opens in a new tab)</span>
@@ -229,7 +229,7 @@ export function GitHub({ index = "04" }: { index?: string }) {
                     alt=""
                     width={56}
                     height={56}
-                    className="size-14 rounded-full border border-line"
+                    className="size-14 rounded-full ring-1 ring-line"
                   />
                   <div className="min-w-0">
                     <p className="truncate text-lg font-semibold tracking-tight">{data.profile.name ?? site.name}</p>
@@ -260,7 +260,7 @@ export function GitHub({ index = "04" }: { index?: string }) {
                 ].map((s) => (
                   <Panel key={s.label} className="flex flex-col justify-between">
                     <p className="text-sm text-muted">{s.label}</p>
-                    <CountUp value={s.value} className="mt-6 block text-4xl font-semibold tracking-[-0.04em] tabular-nums sm:text-5xl" />
+                    <CountUp value={s.value} className="mt-8 block text-5xl font-semibold tracking-[-0.04em] tabular-nums sm:text-6xl" />
                   </Panel>
                 ))}
               </div>
@@ -269,7 +269,7 @@ export function GitHub({ index = "04" }: { index?: string }) {
             {/* Repositories */}
             <RevealItem className="lg:col-span-8">
               <Panel className="h-full p-0 sm:p-0">
-                <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
+                <div className="flex items-center justify-between border-b border-line px-6 py-5 sm:px-7">
                   <h3 className="font-semibold tracking-tight">Recently updated</h3>
                   <span className="font-mono text-xs text-muted">{data.repos.length} public</span>
                 </div>
@@ -280,7 +280,7 @@ export function GitHub({ index = "04" }: { index?: string }) {
                         href={r.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group flex flex-col gap-3 px-5 py-5 transition-colors hover:bg-bg-2 sm:px-6"
+                        className="group flex flex-col gap-3 px-6 py-5 transition-colors hover:bg-bg-3/60 sm:px-7"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <p className="font-mono text-[15px] font-medium">

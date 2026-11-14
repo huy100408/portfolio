@@ -6,7 +6,7 @@ export function TechBadge({ name, className }: { name: string; className?: strin
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border border-line bg-bg px-2.5 py-1 font-mono text-[11px] text-muted",
+        "inline-flex items-center gap-1.5 rounded-full bg-bg px-2.5 py-1 text-[12px] font-medium text-muted",
         className,
       )}
     >

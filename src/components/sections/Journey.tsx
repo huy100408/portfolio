@@ -8,7 +8,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { milestones } from "@/config/journey";
 import { gsap, mq, useGSAP } from "@/lib/gsap";
 
-export function Journey({ index = "05" }: { index?: string }) {
+export function Journey() {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
@@ -28,10 +28,11 @@ export function Journey({ index = "05" }: { index?: string }) {
         gsap.utils.toArray<HTMLElement>("[data-node]").forEach((node) => {
           gsap.fromTo(
             node,
-            { scale: 0.4, backgroundColor: "var(--bg)" },
+            { scale: 0.4, backgroundColor: "var(--bg)", boxShadow: "0 0 0 0px rgb(0 113 227 / 0)" },
             {
               scale: 1,
-              backgroundColor: "var(--fg)",
+              backgroundColor: "var(--cta)",
+              boxShadow: "0 0 0 6px rgb(0 113 227 / 0.18)",
               duration: 0.5,
               ease: "back.out(2)",
               scrollTrigger: { trigger: node, start: "top 65%", toggleActions: "play none none reverse" },
@@ -48,7 +49,6 @@ export function Journey({ index = "05" }: { index?: string }) {
     <section id="journey" ref={root} className="relative py-28 sm:py-40">
       <div className="container-page">
         <SectionHeading
-          index={index}
           label="Journey"
           title="Milestones so far."
           description="Projects shipped and steps taken, newest first."
@@ -65,7 +65,7 @@ export function Journey({ index = "05" }: { index?: string }) {
           <span
             aria-hidden
             data-rail
-            className="absolute top-2 bottom-2 left-0 w-px origin-top bg-fg sm:left-[calc(25%+0.5px)]"
+            className="absolute top-2 bottom-2 left-0 w-px origin-top bg-[linear-gradient(to_bottom,var(--brand-1),var(--brand-2),var(--brand-3))] sm:left-[calc(25%+0.5px)]"
           />
 
           {milestones.map((m) => (
@@ -73,21 +73,21 @@ export function Journey({ index = "05" }: { index?: string }) {
               <span
                 aria-hidden
                 data-node
-                className="absolute top-1.5 left-[-5px] size-[11px] rounded-full border-2 border-fg bg-fg sm:left-[calc(25%-5px)]"
+                className="absolute top-1.5 left-[-5px] size-[11px] rounded-full border-2 border-cta bg-cta sm:left-[calc(25%-5px)]"
               />
               <Reveal className="sm:pr-10 sm:text-right">
-                <p className="font-mono text-sm tabular-nums text-muted">{m.date}</p>
+                <p className="text-[15px] font-semibold tabular-nums text-muted">{m.date}</p>
               </Reveal>
               <Reveal className="sm:col-span-3 sm:pl-10" delay={0.08}>
-                <span className="eyebrow">{m.tag}</span>
-                <h3 className="mt-2 text-2xl font-semibold tracking-[-0.03em] sm:text-3xl">{m.title}</h3>
-                <p className="mt-3 max-w-2xl text-pretty leading-relaxed text-muted">{m.description}</p>
+                <span className="text-[13px] font-semibold text-gradient">{m.tag}</span>
+                <h3 className="mt-2 text-[28px] font-semibold leading-tight tracking-[-0.02em] sm:text-[32px]">{m.title}</h3>
+                <p className="mt-3 max-w-2xl text-pretty text-[17px] leading-[1.47] text-muted">{m.description}</p>
                 {m.link && (
                   <a
                     href={m.link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group mt-4 inline-flex items-center gap-1 text-sm font-medium underline decoration-line underline-offset-4 transition-colors hover:decoration-fg"
+                    className="group mt-4 inline-flex items-center gap-1 text-[15px] font-medium text-accent hover:underline hover:underline-offset-4"
                   >
                     {m.link.label}
                     <ArrowUpRight className="size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 export function ProjectMedia({ project, priority }: { project: Project; priority?: boolean }) {
   const img = project.images[0];
   return (
-    <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-line bg-bg-2">
+    <div className="relative aspect-[16/10] overflow-hidden rounded-[20px] bg-bg-3 shadow-soft">
       <div data-parallax className="absolute -inset-[8%] will-change-transform">
         <div
           className="size-full transition-[scale] duration-700 ease-out-expo group-hover:scale-[1.05] motion-reduce:transition-none"
@@ -33,7 +33,7 @@ export function ProjectMedia({ project, priority }: { project: Project; priority
         </div>
       </div>
       {project.needsInfo && (
-        <span className={cn("absolute left-3 top-3 rounded-full border border-line bg-bg/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-muted backdrop-blur")}>
+        <span className={cn("glass absolute left-3 top-3 rounded-full px-3 py-1 text-[11px] font-medium text-muted")}>
           Details coming soon
         </span>
       )}

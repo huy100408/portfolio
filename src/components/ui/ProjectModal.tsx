@@ -128,14 +128,14 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
             role="dialog"
             aria-modal="true"
             aria-labelledby="project-title"
-            className="relative max-h-[92dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-t-3xl border border-line bg-bg shadow-lift sm:rounded-3xl"
+            className="relative max-h-[92dvh] w-full max-w-3xl overflow-y-auto overscroll-contain rounded-t-[28px] bg-bg shadow-lift sm:rounded-[28px]"
             initial={{ opacity: 0, y: 60, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.98, transition: { duration: 0.25, ease: ease.inOut } }}
             transition={spring.soft}
           >
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-bg/85 px-5 py-3 backdrop-blur sm:px-7">
-              <span className="eyebrow">{project.tagline}</span>
+              <span className="truncate pr-4 text-[13px] font-semibold text-muted">{project.tagline}</span>
               <button
                 ref={closeBtn}
                 type="button"
@@ -152,10 +152,10 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
                 <Gallery project={project} />
               </motion.div>
 
-              <motion.h3 variants={item} id="project-title" className="mt-7 text-3xl font-semibold tracking-[-0.035em] sm:text-4xl">
+              <motion.h3 variants={item} id="project-title" className="mt-8 text-[32px] font-semibold leading-tight tracking-[-0.025em] sm:text-[40px]">
                 {project.name}
               </motion.h3>
-              <motion.p variants={item} className="mt-3 text-pretty text-base leading-relaxed text-muted sm:text-lg">
+              <motion.p variants={item} className="mt-3 text-pretty text-[17px] leading-[1.47] text-muted sm:text-[19px]">
                 {project.summary}
               </motion.p>
 
@@ -172,7 +172,7 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
 
               {project.needsInfo && (
                 <motion.div variants={item} className="mt-6 space-y-3">
-                  <p className="rounded-xl border border-dashed border-line p-4 text-sm text-muted">
+                  <p className="rounded-2xl bg-bg-2 p-4 text-sm text-muted">
                     A full write-up for this project is coming soon.
                   </p>
                   <DevNote>
@@ -184,7 +184,7 @@ export function ProjectModal({ project, onClose }: { project: Project | null; on
 
               {project.tech.length > 0 && (
                 <motion.div variants={item} className="mt-7">
-                  <p className="eyebrow mb-3">Built with</p>
+                  <p className="mb-3 text-[13px] font-semibold text-muted">Built with</p>
                   <div className="flex flex-wrap gap-1.5">
                     {project.tech.map((t) => (
                       <TechBadge key={t} name={t} />

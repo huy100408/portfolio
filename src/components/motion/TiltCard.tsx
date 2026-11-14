@@ -1,13 +1,13 @@
 "use client";
 
-import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { spring } from "@/lib/motion";
 import { useFinePointer, useReducedMotionPref } from "@/hooks/useMedia";
 import { cn } from "@/lib/utils";
 
 /**
- * 3D tilt that follows the cursor, with a soft spotlight.
+ * 3D tilt that follows the cursor.
  * Exposes --mx/--my (-0.5…0.5) to children so images inside can parallax against the tilt.
  */
 export function TiltCard({
@@ -30,9 +30,6 @@ export function TiltCard({
   const sy = useSpring(py, spring.soft);
   const rotateX = useTransform(sy, [-0.5, 0.5], [max, -max]);
   const rotateY = useTransform(sx, [-0.5, 0.5], [-max, max]);
-  const lightX = useTransform(sx, (v) => `${(v + 0.5) * 100}%`);
-  const lightY = useTransform(sy, (v) => `${(v + 0.5) * 100}%`);
-  const spotlight = useMotionTemplate`radial-gradient(420px circle at ${lightX} ${lightY}, rgb(var(--particle) / 0.06), transparent 60%)`;
 
   return (
     <div style={{ perspective: 1100 }} className="h-full">
@@ -56,13 +53,6 @@ export function TiltCard({
         }}
       >
         {children}
-        {enabled && (
-          <motion.div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 rounded-[inherit] z-10"
-            style={{ background: spotlight }}
-          />
-        )}
       </motion.div>
     </div>
   );

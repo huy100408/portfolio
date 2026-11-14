@@ -66,29 +66,29 @@ export function LoadingScreen() {
             exit={{ y: -40, opacity: 0 }}
             transition={{ duration: 0.6, ease: ease.inOut }}
           >
-            <div className="flex overflow-hidden text-[clamp(2rem,7vw,4.5rem)] font-semibold tracking-[-0.05em]">
+            <div className="flex text-[clamp(2.25rem,7vw,4.5rem)] font-bold tracking-[-0.035em]">
               {letters.map((ch, i) => (
                 <motion.span
                   key={i}
                   className="inline-block"
-                  initial={{ y: "110%" }}
-                  animate={{ y: "0%" }}
-                  transition={{ duration: 0.8, ease: ease.out, delay: 0.05 + i * 0.035 }}
+                  initial={{ opacity: 0, y: "0.3em", filter: "blur(12px)" }}
+                  animate={{ opacity: 1, y: "0em", filter: "blur(0px)" }}
+                  transition={{ duration: 0.8, ease: ease.out, delay: 0.05 + i * 0.03 }}
                 >
                   {ch === " " ? " " : ch}
                 </motion.span>
               ))}
             </div>
-            <div className="mt-6 h-px w-40 overflow-hidden bg-line">
+            <div className="mt-7 h-[3px] w-40 overflow-hidden rounded-full bg-bg-3">
               <motion.div
-                className="h-full origin-left bg-fg"
+                className="h-full origin-left rounded-full bg-[linear-gradient(90deg,var(--brand-1),var(--brand-2),var(--brand-3),var(--brand-4))]"
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: HOLD_MS / 1000 - 0.1, ease: ease.inOut }}
               />
             </div>
             <motion.p
-              className="eyebrow mt-4"
+              className="mt-4 text-[13px] font-semibold text-muted"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4, duration: 0.6 }}

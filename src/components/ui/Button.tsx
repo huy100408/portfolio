@@ -9,15 +9,15 @@ const base =
   "disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-fg text-bg shadow-soft hover:shadow-lift",
-  secondary: "border border-line bg-bg text-fg hover:border-line-strong hover:bg-bg-2",
+  primary: "bg-cta text-white hover:bg-cta-hover",
+  secondary: "border border-cta/80 text-accent hover:border-cta hover:bg-cta hover:text-white",
   ghost: "text-muted hover:text-fg hover:bg-bg-2",
 };
 
 const sizes: Record<Size, string> = {
   sm: "h-9 px-4 text-sm",
-  md: "h-11 px-5 text-sm",
-  lg: "h-12 px-6 text-[15px] sm:h-14 sm:px-7",
+  md: "h-11 px-5 text-[15px]",
+  lg: "h-12 px-7 text-[17px] sm:h-14 sm:px-8",
 };
 
 export function buttonClasses(variant: Variant = "primary", size: Size = "md", className?: string) {

@@ -4,36 +4,51 @@
 
 /* ---------------------------------------------------------------
    Design tokens
+   Any element with the `dark` class switches its whole subtree to the
+   dark palette, so single sections can be dark in light mode.
 ---------------------------------------------------------------- */
 :root {
   --bg: #ffffff;
-  --bg-2: #f7f7f7;
-  --bg-3: #efefef;
-  --fg: #111111;
-  --muted: #737373;
-  --line: #e5e5e5;
-  --line-strong: #d4d4d4;
-  --accent: #2563eb;
-  --accent-soft: rgb(37 99 235 / 0.08);
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.12);
-  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.04), 0 24px 60px -24px rgb(0 0 0 / 0.22);
-  --particle: 17 17 17;
+  --bg-2: #f5f5f7;
+  --bg-3: #e8e8ed;
+  --fg: #1d1d1f;
+  --muted: #6e6e73;
+  --line: #e0e0e5;
+  --line-strong: #c7c7cc;
+  --accent: #0066cc;
+  --accent-soft: rgb(0 113 227 / 0.08);
+  --cta: #0071e3;
+  --cta-hover: #0077ed;
+  --glass: 255 255 255;
+  --brand-1: #0071e3;
+  --brand-2: #8b5cf6;
+  --brand-3: #e3418b;
+  --brand-4: #ff8a3d;
+  --sheen: 255 255 255;
+  --sheen-a: 0.95;
+  --shadow: 0 2px 6px rgb(0 0 0 / 0.04), 0 12px 32px -12px rgb(0 0 0 / 0.14);
+  --shadow-lg: 0 4px 12px rgb(0 0 0 / 0.05), 0 30px 70px -24px rgb(0 0 0 / 0.28);
   color-scheme: light;
 }
 
 .dark {
-  --bg: #101010;
-  --bg-2: #181818;
-  --bg-3: #202020;
-  --fg: #ffffff;
-  --muted: #a3a3a3;
-  --line: #262626;
-  --line-strong: #333333;
-  --accent: #60a5fa;
-  --accent-soft: rgb(96 165 250 / 0.1);
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
-  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.4), 0 24px 60px -24px rgb(0 0 0 / 0.8);
-  --particle: 255 255 255;
+  --bg: #000000;
+  --bg-2: #161617;
+  --bg-3: #232325;
+  --fg: #f5f5f7;
+  --muted: #86868b;
+  --line: #2c2c2e;
+  --line-strong: #424245;
+  --accent: #2997ff;
+  --accent-soft: rgb(41 151 255 / 0.12);
+  --glass: 22 22 23;
+  --brand-1: #2997ff;
+  --brand-2: #a78bfa;
+  --brand-3: #f472b6;
+  --brand-4: #fb923c;
+  --sheen-a: 0.07;
+  --shadow: 0 2px 6px rgb(0 0 0 / 0.5), 0 12px 32px -12px rgb(0 0 0 / 0.7);
+  --shadow-lg: 0 4px 12px rgb(0 0 0 / 0.5), 0 30px 70px -24px rgb(0 0 0 / 0.9);
   color-scheme: dark;
 }
 
@@ -47,11 +62,20 @@
   --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --color-cta: var(--cta);
+  --color-cta-hover: var(--cta-hover);
+  --color-brand-1: var(--brand-1);
+  --color-brand-2: var(--brand-2);
+  --color-brand-3: var(--brand-3);
+  --color-brand-4: var(--brand-4);
+  /* System UI first (San Francisco on Apple devices), Geist everywhere else. */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", var(--font-geist-sans), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, var(--font-geist-mono), Menlo, monospace;
+  --radius-tile: 1.75rem;
   --shadow-soft: var(--shadow);
   --shadow-lift: var(--shadow-lg);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-apple: cubic-bezier(0.28, 0.11, 0.32, 1);
 }
 
 /* ---------------------------------------------------------------
@@ -72,22 +96,17 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
+  letter-spacing: -0.011em;
   overflow-x: clip;
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-section[id] {
-  scroll-margin-top: 5rem;
-}
-
 ::selection {
-  background: var(--fg);
-  color: var(--bg);
+  background: rgb(0 113 227 / 0.22);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--cta);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -109,25 +128,37 @@ section[id] {
 }
 
 @utility text-display {
-  font-size: clamp(3.25rem, 13.5vw, 11.5rem);
-  line-height: 0.88;
-  letter-spacing: -0.055em;
-  font-weight: 650;
+  font-size: clamp(3.5rem, 12.5vw, 9.5rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  font-weight: 700;
 }
 
 @utility text-h2 {
-  font-size: clamp(2.25rem, 6vw, 4.75rem);
-  line-height: 0.98;
-  letter-spacing: -0.045em;
-  font-weight: 620;
+  font-size: clamp(2.5rem, 6.2vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 700;
 }
 
-@utility eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
+@utility text-h3 {
+  font-size: clamp(1.75rem, 3.4vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+@utility text-gradient {
+  background-image: linear-gradient(90deg, var(--brand-1), var(--brand-2) 55%, var(--brand-3));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glass {
+  background-color: rgb(var(--glass) / 0.72);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
 }
 
 @utility bg-grid {
@@ -145,7 +176,7 @@ section[id] {
 }
 
 /* ---------------------------------------------------------------
-   Keyframes (CSS-only motion: cheap, runs off the main thread)
+   Keyframes (CSS-only motion: cheap, mostly off the main thread)
 ---------------------------------------------------------------- */
 @keyframes float {
   0%, 100% { transform: translate3d(0, 0, 0); }
@@ -158,7 +189,7 @@ section[id] {
   100% { transform: translate3d(-4%, -3%, 0) scale(1); }
 }
 
-@keyframes spin-slow {
+@keyframes spin {
   to { transform: rotate(360deg); }
 }
 
@@ -166,38 +197,60 @@ section[id] {
   to { transform: translate3d(-50%, 0, 0); }
 }
 
-@keyframes scroll-dot {
-  0% { transform: translateY(0); opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translateY(14px); opacity: 0; }
+@keyframes shimmer {
+  to { background-position: -200% 0; }
 }
 
-@keyframes caret {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
+@keyframes eq {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
 }
 
-@keyframes dash {
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 0.6; }
-  100% { transform: scale(2.2); opacity: 0; }
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.06); }
 }
 
 .animate-float { animation: float 5s ease-in-out infinite; }
 .animate-drift { animation: drift 22s ease-in-out infinite; }
-.animate-spin-slow { animation: spin-slow 40s linear infinite; }
+.animate-spin-slow { animation: spin 28s linear infinite; }
 .animate-marquee { animation: marquee 40s linear infinite; }
-.animate-caret { animation: caret 1s steps(1) infinite; }
-.animate-pulse-ring { animation: pulse-ring 2s ease-out infinite; }
-.animate-scroll-dot { animation: scroll-dot 1.8s ease-in-out infinite; }
+.animate-breathe { animation: breathe 6s ease-in-out infinite; }
 
 .marquee:hover .animate-marquee { animation-play-state: paused; }
 
-/* Rotating conic border for cards (hover). Uses a registered property so the angle can animate. */
+/* Multi-colour text that slowly flows. */
+.text-shimmer {
+  background-image: linear-gradient(90deg, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-4), var(--brand-2), var(--brand-1));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 9s linear infinite;
+}
+
+/* Equalizer bars for the music player. */
+.eq-bar {
+  transform: scaleY(0.3);
+  transform-origin: bottom;
+}
+.eq-on .eq-bar {
+  animation: eq 0.9s ease-in-out infinite;
+}
+
+/* The glowing horizon behind the hero and contact headline. */
+.aurora-ring {
+  background: conic-gradient(from 0deg, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-4), #ffd60a, var(--brand-1));
+  -webkit-mask-image: radial-gradient(closest-side, transparent 70%, #000 83%, transparent 100%);
+  mask-image: radial-gradient(closest-side, transparent 70%, #000 83%, transparent 100%);
+}
+.aurora-haze {
+  background: conic-gradient(from 180deg, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-4), var(--brand-1));
+  -webkit-mask-image: radial-gradient(closest-side, transparent 45%, #000 80%, transparent 100%);
+  mask-image: radial-gradient(closest-side, transparent 45%, #000 80%, transparent 100%);
+}
+
+/* Rotating angle for conic gradients. A registered property so it can animate. */
 @property --angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -208,31 +261,100 @@ section[id] {
   to { --angle: 360deg; }
 }
 
-.animated-border {
+/* Glowing, rotating colour ring around pills (primary buttons, the music player). */
+.glow-ring {
+  position: relative;
+  isolation: isolate;
+  border-radius: 9999px;
+}
+.glow-ring::before,
+.glow-ring::after {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  z-index: -1;
+  background: conic-gradient(from var(--angle), var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-4), var(--brand-1));
+  animation: border-spin 4s linear infinite;
+  pointer-events: none;
+}
+.glow-ring::after {
+  inset: 2px;
+  z-index: -2;
+  filter: blur(14px);
+  opacity: 0.5;
+  transition: opacity 0.4s ease;
+}
+.glow-ring:hover::after {
+  opacity: 0.85;
+}
+
+/* Cursor spotlight for tiles: a soft sheen under the content and a light
+   that runs along the border. SpotlightTracker sets --sx/--sy. */
+.spotlight {
   position: relative;
   isolation: isolate;
 }
-
-.animated-border::before {
+.spotlight::after {
   content: "";
   position: absolute;
-  inset: -1px;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(520px circle at var(--sx, 50%) var(--sy, 50%), rgb(var(--sheen) / var(--sheen-a)), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
   border-radius: inherit;
   padding: 1px;
-  background: conic-gradient(from var(--angle), transparent 0deg, var(--accent) 60deg, transparent 140deg, transparent 360deg);
+  pointer-events: none;
+  background: radial-gradient(280px circle at var(--sx, 50%) var(--sy, 50%), var(--brand-1), transparent 70%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
   opacity: 0;
-  transition: opacity 0.4s ease;
-  animation: border-spin 3.5s linear infinite;
-  pointer-events: none;
-  z-index: 1;
+  transition: opacity 0.5s ease;
+}
+.spotlight:hover::before,
+.spotlight:hover::after {
+  opacity: 1;
+}
+@media (hover: none) {
+  .spotlight::before,
+  .spotlight::after {
+    display: none;
+  }
 }
 
-.animated-border:hover::before,
-.animated-border:focus-within::before {
-  opacity: 1;
+/* ---------------------------------------------------------------
+   Origin section. A stacked layout by default (reduced motion, no JS);
+   when GSAP builds the pinned scene it sets data-animated and the pieces
+   are layered in one full-screen cell.
+---------------------------------------------------------------- */
+.origin-stage[data-animated] .origin-inner {
+  display: grid;
+  height: 100svh;
+  place-items: center;
+  gap: 0;
+  padding-block: 0;
+}
+.origin-stage[data-animated] .origin-inner > * {
+  grid-area: 1 / 1;
+}
+.origin-stage[data-animated] .origin-photo {
+  width: min(30rem, 80vw, 54svh);
+  margin-bottom: 8svh;
+}
+/* Kept clear of the floating music player at the bottom of the screen. */
+.origin-stage[data-animated] .origin-caption {
+  align-self: end;
+  margin-bottom: max(9svh, 6rem);
 }
 
 /* ---------------------------------------------------------------
@@ -251,10 +373,11 @@ html[data-intro="seen"] #intro-loader {
   .animate-drift,
   .animate-spin-slow,
   .animate-marquee,
-  .animate-pulse-ring,
-  .animate-scroll-dot,
-  .animate-caret,
-  .animated-border::before {
+  .animate-breathe,
+  .text-shimmer,
+  .eq-on .eq-bar,
+  .glow-ring::before,
+  .glow-ring::after {
     animation: none !important;
   }
   #intro-loader {

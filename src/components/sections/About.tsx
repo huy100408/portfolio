@@ -18,6 +18,16 @@ const interests: { title: string; text: string; icon: LucideIcon }[] = [
   { title: "Learning new technologies", text: "Picking up a new tool by building something real with it.", icon: Sparkles },
 ];
 
+/** Icon tile gradients, cycled through the brand palette. */
+const tints: [string, string][] = [
+  ["--brand-1", "--brand-2"],
+  ["--brand-2", "--brand-3"],
+  ["--brand-3", "--brand-4"],
+  ["--brand-4", "--brand-3"],
+  ["--brand-2", "--brand-1"],
+  ["--brand-1", "--brand-3"],
+];
+
 export function About() {
   const root = useRef<HTMLElement>(null);
 
@@ -45,40 +55,41 @@ export function About() {
   return (
     <section id="about" ref={root} className="relative py-28 sm:py-40">
       <div className="container-page">
-        <SectionHeading index="01" label="About" title="Code with a purpose." />
+        <SectionHeading label="About" title="Code with a purpose." />
 
-        <div className="grid gap-16 lg:grid-cols-12 lg:gap-12">
-          <div className="lg:col-span-7">
-            <p data-statement className="text-pretty text-[1.65rem] font-medium leading-[1.25] tracking-[-0.025em] sm:text-4xl sm:leading-[1.2]">
-              {statement.split(" ").map((w, i) => (
-                <span key={i} data-word className="inline">
-                  {w}{" "}
-                </span>
-              ))}
-            </p>
-            <p className="mt-8 max-w-xl text-pretty text-lg leading-relaxed text-muted">
-              I learn by building. Each project is a chance to pick up a new tool, understand it properly and ship
-              something people can use, from AI assistants to study apps.
-            </p>
-          </div>
-
-          <RevealGroup as="ul" className="border-t border-line lg:col-span-5" each={0.07}>
-            {interests.map(({ title, text, icon: Icon }, i) => (
-              <RevealItem as="li" key={title} className="group border-b border-line">
-                <div className="flex items-start gap-4 py-5 transition-transform duration-500 ease-out-expo group-hover:translate-x-1.5">
-                  <span className="mt-0.5 font-mono text-xs text-muted tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-                  <div className="flex-1">
-                    <h3 className="font-semibold tracking-tight">{title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-muted">{text}</p>
-                  </div>
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full border border-line text-muted transition-all duration-500 ease-out-expo group-hover:rotate-[-8deg] group-hover:border-fg group-hover:bg-fg group-hover:text-bg">
-                    <Icon className="size-4" strokeWidth={1.75} />
-                  </span>
-                </div>
-              </RevealItem>
+        <div className="max-w-5xl">
+          <p
+            data-statement
+            className="text-pretty text-[28px] font-semibold leading-[1.18] tracking-[-0.025em] sm:text-[40px] sm:leading-[1.14] lg:text-[48px] lg:leading-[1.1]"
+          >
+            {statement.split(" ").map((w, i) => (
+              <span key={i} data-word className="inline">
+                {w}{" "}
+              </span>
             ))}
-          </RevealGroup>
+          </p>
+          <p className="mt-10 max-w-2xl text-pretty text-[17px] leading-[1.47] text-muted sm:text-[21px] sm:leading-[1.38]">
+            I learn by building. Each project is a chance to pick up a new tool, understand it properly and ship
+            something people can use, from AI assistants to study apps.
+          </p>
         </div>
+
+        <RevealGroup as="ul" className="mt-20 grid gap-4 sm:mt-28 sm:grid-cols-2 lg:grid-cols-3" each={0.07}>
+          {interests.map(({ title, text, icon: Icon }, i) => (
+            <RevealItem as="li" key={title} className="h-full">
+              <div className="spotlight group flex h-full flex-col rounded-tile bg-bg-2 p-7 transition-transform duration-700 ease-out-expo hover:-translate-y-1 sm:p-8">
+                <span
+                  className="grid size-12 place-items-center rounded-2xl text-white shadow-soft transition-transform duration-700 ease-out-expo group-hover:rotate-[-6deg] group-hover:scale-110"
+                  style={{ background: `linear-gradient(135deg, var(${tints[i % tints.length][0]}), var(${tints[i % tints.length][1]}))` }}
+                >
+                  <Icon className="size-[22px]" strokeWidth={1.9} />
+                </span>
+                <h3 className="mt-10 text-[21px] font-semibold leading-tight tracking-[-0.015em]">{title}</h3>
+                <p className="mt-2 text-[15px] leading-relaxed text-muted sm:text-[17px]">{text}</p>
+              </div>
+            </RevealItem>
+          ))}
+        </RevealGroup>
       </div>
     </section>
   );

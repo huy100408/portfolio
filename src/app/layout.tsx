@@ -3,13 +3,15 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
+import { SpotlightTracker } from "@/components/motion/SpotlightTracker";
+import { MusicPill } from "@/components/music/MusicPill";
 import { Providers } from "@/components/providers/Providers";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { site } from "@/config/site";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], preload: false });
 
 const title = `${site.name} | ${site.title}`;
 
@@ -32,7 +34,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#101010" },
+    { media: "(prefers-color-scheme: dark)", color: "#000000" },
   ],
 };
 
@@ -45,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: introScript }} />
         <noscript>
-          <style>{`#intro-loader{display:none!important}[data-reveal],[data-reveal] *{opacity:1!important;transform:none!important}`}</style>
+          <style>{`#intro-loader{display:none!important}[data-reveal],[data-reveal] *{opacity:1!important;transform:none!important;filter:none!important}`}</style>
         </noscript>
       </head>
       <body>
@@ -61,6 +63,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Navbar />
           <main id="main">{children}</main>
           <Footer />
+          <MusicPill />
+          <SpotlightTracker />
         </Providers>
       </body>
     </html>

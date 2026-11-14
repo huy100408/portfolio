@@ -33,7 +33,8 @@ export const spring = {
 };
 
 /** Viewport options for whileInView reveals. */
-export const inView = { once: true, amount: 0.25, margin: "0px 0px -8% 0px" } as const;
+// "some" plus a bottom margin, so tall groups (taller than the screen on phones) still trigger.
+export const inView = { once: true, amount: "some", margin: "0px 0px -12% 0px" } as const;
 
 export const fadeUp: Variants = {
   hidden: { opacity: 0, y: 28 },

@@ -1,16 +1,30 @@
 {
-  "fetchedAt": "2026-11-14T21:02:39.583Z",
+  "fetchedAt": "2026-11-14T21:44:47.781Z",
   "user": {
     "login": "huy100408",
     "name": null,
     "avatar_url": "https://avatars.githubusercontent.com/u/166576004?v=4",
     "html_url": "https://github.com/huy100408",
-    "public_repos": 2,
+    "public_repos": 3,
     "followers": 0,
     "following": 0,
     "created_at": "2024-04-10T02:27:55Z"
   },
   "repos": [
+    {
+      "name": "portfolio",
+      "description": "Personal portfolio of Brian Nguyen, Developer & Software Engineer. Next.js static site deployed to GitHub Pages.",
+      "language": "TypeScript",
+      "stargazers_count": 0,
+      "forks_count": 0,
+      "updated_at": "2026-11-14T21:05:21Z",
+      "pushed_at": "2026-11-14T21:05:18Z",
+      "html_url": "https://github.com/huy100408/portfolio",
+      "homepage": null,
+      "topics": [],
+      "fork": false,
+      "archived": false
+    },
     {
       "name": "nakano-academy",
       "description": "The Quintessential Quintuplets tutor app. Five Nakano sisters teach Math, English, AP Human Geography, Computer Science and Science. macOS, Windows and web.",

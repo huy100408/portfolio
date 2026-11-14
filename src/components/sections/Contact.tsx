@@ -1,97 +1,137 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { ArrowUpRight, Mail } from "lucide-react";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { RevealGroup, RevealItem } from "@/components/motion/Reveal";
-import { SplitText } from "@/components/motion/SplitText";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { ButtonLink } from "@/components/ui/Button";
 import { site } from "@/config/site";
 import { BrandIcon } from "@/lib/brand-icons";
+import { duration, ease, inView } from "@/lib/motion";
 
-function Card({ children }: { children: React.ReactNode }) {
+function Tile({ children }: { children: React.ReactNode }) {
   return (
-    <div className="animated-border flex h-full flex-col rounded-2xl border border-line bg-bg p-6 transition-shadow duration-500 hover:shadow-lift sm:p-7">
+    <div className="spotlight flex h-full flex-col rounded-tile bg-bg-2 p-7 text-left transition-transform duration-700 ease-out-expo hover:-translate-y-1 sm:p-8">
       {children}
     </div>
   );
 }
 
-export function Contact({ index = "06" }: { index?: string }) {
+const tileLabel = "mt-10 text-[13px] font-semibold text-muted";
+const tileAction =
+  "inline-flex items-center gap-1.5 text-[15px] font-medium text-accent transition-colors hover:underline hover:underline-offset-4";
+
+export function Contact() {
   return (
-    <section id="contact" className="relative overflow-hidden py-28 sm:py-40">
-      <div aria-hidden className="bg-grid pointer-events-none absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" />
-      <div className="container-page relative">
-        <div className="mb-10 flex items-center gap-4">
-          <span className="eyebrow tabular-nums text-fg">{index}</span>
-          <span aria-hidden className="h-px flex-1 bg-line" />
-          <span className="eyebrow">Contact</span>
+    <section id="contact" className="relative overflow-hidden pb-28 pt-32 text-center sm:pb-40 sm:pt-48">
+      {/* A second horizon, smaller, glowing up behind the headline. */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[56rem] overflow-hidden [mask-image:linear-gradient(to_bottom,black_55%,transparent)]">
+        <div className="absolute left-1/2 top-[30%] size-[110vmax] -translate-x-1/2 sm:top-[22%] sm:size-[90vmax]">
+          <div className="aurora-haze animate-spin-slow size-full opacity-25 blur-3xl dark:opacity-40" />
         </div>
+      </div>
 
-        <SplitText as="h2" by="chars" text="Let's build something." className="text-display max-w-[12ch] text-balance" />
+      <div className="container-page relative">
+        <motion.p
+          className="text-[17px] font-semibold text-gradient sm:text-[21px]"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={inView}
+          transition={{ duration: duration.slow, ease: ease.out }}
+          data-reveal
+        >
+          Contact
+        </motion.p>
 
-        <div className="mt-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="max-w-md text-pretty text-lg leading-relaxed text-muted">
+        {/* One element (not split pieces) so the flowing gradient stays continuous across the line. */}
+        <motion.h2
+          className="text-display text-shimmer mx-auto mt-4 max-w-[11ch] pb-[0.06em] text-balance"
+          initial={{ opacity: 0, y: 40, scale: 0.96, filter: "blur(16px)" }}
+          whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+          viewport={inView}
+          transition={{ duration: duration.cinematic * 1.3, ease: ease.out, delay: 0.1 }}
+          data-reveal
+        >
+          Let&apos;s build something.
+        </motion.h2>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={inView}
+          transition={{ duration: duration.slow, ease: ease.out, delay: 0.4 }}
+          data-reveal
+        >
+          <p className="mx-auto mt-8 max-w-xl text-pretty text-[17px] leading-[1.47] text-muted sm:text-[21px] sm:leading-[1.38]">
             Have a project, an idea or a question? Email is the best way to reach me.
           </p>
-          <Magnetic>
-            <ButtonLink href={`mailto:${site.email}`} size="lg" icon={<ArrowUpRight className="size-4" />}>
-              Send an email
-            </ButtonLink>
-          </Magnetic>
-        </div>
+          <div className="mt-10 flex justify-center">
+            <Magnetic>
+              <span className="glow-ring block">
+                <ButtonLink href={`mailto:${site.email}`} size="lg" icon={<ArrowUpRight className="size-4" />}>
+                  Send an email
+                </ButtonLink>
+              </span>
+            </Magnetic>
+          </div>
+        </motion.div>
 
-        <RevealGroup className="mt-16 grid gap-4 md:grid-cols-3" each={0.08}>
+        <RevealGroup className="mx-auto mt-24 grid max-w-5xl gap-4 sm:mt-32 md:grid-cols-3" each={0.08}>
           <RevealItem>
-            <Card>
-              <Mail className="size-5" strokeWidth={1.75} />
-              <p className="eyebrow mt-8">Email</p>
-              <a href={`mailto:${site.email}`} className="mt-2 break-all text-lg font-medium underline-offset-4 hover:underline">
+            <Tile>
+              <span className="grid size-12 place-items-center rounded-2xl bg-bg text-fg">
+                <Mail className="size-[22px]" strokeWidth={1.9} />
+              </span>
+              <p className={tileLabel}>Email</p>
+              <a
+                href={`mailto:${site.email}`}
+                className="mt-1 break-all text-[21px] font-semibold tracking-[-0.015em] underline-offset-4 hover:underline"
+              >
                 {site.email}
               </a>
-              <div className="mt-auto pt-6">
-                <CopyButton value={site.email} label="Copy email address">
+              <div className="mt-auto pt-8">
+                <CopyButton value={site.email} label="Copy email address" bare className={tileAction}>
                   Copy email
                 </CopyButton>
               </div>
-            </Card>
+            </Tile>
           </RevealItem>
           <RevealItem>
-            <Card>
-              <BrandIcon name="discord" className="size-5" />
-              <p className="eyebrow mt-8">Discord</p>
-              <p className="mt-2 text-lg font-medium">{site.discord}</p>
-              <div className="mt-auto pt-6">
-                <CopyButton value={site.discord} label={`Copy Discord username ${site.discord}`}>
+            <Tile>
+              <span className="grid size-12 place-items-center rounded-2xl bg-[#5865F2] text-white">
+                <BrandIcon name="discord" className="size-[22px]" />
+              </span>
+              <p className={tileLabel}>Discord</p>
+              <p className="mt-1 text-[21px] font-semibold tracking-[-0.015em]">{site.discord}</p>
+              <div className="mt-auto pt-8">
+                <CopyButton value={site.discord} label={`Copy Discord username ${site.discord}`} bare className={tileAction}>
                   Copy username
                 </CopyButton>
               </div>
-            </Card>
+            </Tile>
           </RevealItem>
           <RevealItem>
-            <Card>
-              <BrandIcon name="github" className="size-5" />
-              <p className="eyebrow mt-8">GitHub</p>
-              <p className="mt-2 text-lg font-medium">@{site.github.username}</p>
-              <div className="mt-auto pt-6">
-                <a
-                  href={site.github.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-line px-3.5 py-2 text-sm font-medium transition-colors hover:border-line-strong hover:bg-bg-2"
-                >
+            <Tile>
+              <span className="grid size-12 place-items-center rounded-2xl bg-fg text-bg">
+                <BrandIcon name="github" className="size-[22px]" />
+              </span>
+              <p className={tileLabel}>GitHub</p>
+              <p className="mt-1 text-[21px] font-semibold tracking-[-0.015em]">@{site.github.username}</p>
+              <div className="mt-auto pt-8">
+                <a href={site.github.url} target="_blank" rel="noopener noreferrer" className={tileAction}>
                   View profile <ArrowUpRight className="size-4" />
                   <span className="sr-only">(opens in a new tab)</span>
                 </a>
               </div>
-            </Card>
+            </Tile>
           </RevealItem>
         </RevealGroup>
 
         {site.linkedin && (
-          <p className="mt-6 text-sm text-muted">
+          <p className="mt-8 text-sm text-muted">
             Also on{" "}
-            <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="font-medium text-fg underline underline-offset-4">
+            <a href={site.linkedin} target="_blank" rel="noopener noreferrer" className="font-medium text-accent hover:underline">
               LinkedIn
             </a>
             .

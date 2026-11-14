@@ -22,29 +22,15 @@ export function ProjectCard({
   className?: string;
 }) {
   return (
-    <TiltCard className={cn("rounded-2xl", className)}>
-      <article
-        data-project-card
-        className="animated-border group flex h-full flex-col rounded-2xl border border-line bg-bg p-3 shadow-soft transition-shadow duration-500 hover:shadow-lift"
-      >
-        <button
-          type="button"
-          onClick={() => onOpen(project.slug)}
-          className="block rounded-xl text-left"
-          aria-label={`Open details for ${project.name}`}
-        >
-          <ProjectMedia project={project} priority={index < 2} />
-        </button>
-
-        <div className="flex flex-1 flex-col px-2 pb-2 pt-5 sm:px-3">
-          <div className="flex items-center justify-between font-mono text-[11px] text-muted">
-            <span className="tabular-nums">
-              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-            </span>
-            {project.year && <span>{project.year}</span>}
-          </div>
-          <h3 className="mt-3 text-2xl font-semibold tracking-[-0.03em]">{project.name}</h3>
-          <p className="mt-1 text-sm text-muted">{project.tagline}</p>
+    <TiltCard className={cn("rounded-tile", className)} max={5}>
+      <article data-project-card className="spotlight group flex h-full flex-col overflow-hidden rounded-tile bg-bg-2">
+        <div className="flex flex-1 flex-col px-7 pt-8 sm:px-9 sm:pt-10">
+          <p className="text-[13px] font-semibold text-muted tabular-nums">
+            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            {project.year && <span> · {project.year}</span>}
+          </p>
+          <h3 className="mt-2 text-[28px] font-semibold leading-tight tracking-[-0.02em] sm:text-[32px]">{project.name}</h3>
+          <p className="mt-1 text-[17px] text-muted">{project.tagline}</p>
           <p className="mt-4 line-clamp-3 text-pretty text-[15px] leading-relaxed text-fg/80">{project.summary}</p>
 
           {project.tech.length > 0 && (
@@ -55,16 +41,16 @@ export function ProjectCard({
                 </li>
               ))}
               {project.tech.length > 5 && (
-                <li className="self-center px-1 font-mono text-[11px] text-muted">+{project.tech.length - 5}</li>
+                <li className="self-center px-1 text-[12px] font-medium text-muted">+{project.tech.length - 5}</li>
               )}
             </ul>
           )}
 
-          <div className="mt-auto flex flex-wrap items-center gap-2 pt-6">
+          <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-7">
             <button
               type="button"
               onClick={() => onOpen(project.slug)}
-              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-fg px-4 text-sm font-medium text-bg transition-transform active:scale-95"
+              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-cta px-4 text-sm font-medium text-white transition-[background-color,scale] hover:bg-cta-hover active:scale-95"
             >
               <Plus className="size-4 transition-transform duration-300 group-hover:rotate-90" strokeWidth={2} />
               Details
@@ -74,7 +60,7 @@ export function ProjectCard({
                 href={project.repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3.5 text-sm font-medium transition-colors hover:border-line-strong hover:bg-bg-2"
+                className="inline-flex items-center gap-1.5 text-[15px] font-medium text-accent hover:underline hover:underline-offset-4"
               >
                 <BrandIcon name="github" className="size-3.5" />
                 GitHub
@@ -86,7 +72,7 @@ export function ProjectCard({
                 href={project.demo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-9 items-center gap-1 rounded-full px-3 text-sm font-medium text-muted transition-colors hover:text-fg"
+                className="inline-flex items-center gap-1 text-[15px] font-medium text-accent hover:underline hover:underline-offset-4"
               >
                 {project.demoLabel ?? "Live demo"}
                 <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -95,6 +81,15 @@ export function ProjectCard({
             )}
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={() => onOpen(project.slug)}
+          className="mt-8 block rounded-[20px] px-4 pb-4 text-left sm:px-5 sm:pb-5"
+          aria-label={`Open details for ${project.name}`}
+        >
+          <ProjectMedia project={project} priority={index < 2} />
+        </button>
       </article>
     </TiltCard>
   );

@@ -11,12 +11,15 @@ export function CopyButton({
   label,
   className,
   children,
+  bare,
 }: {
   value: string;
   /** Accessible name, e.g. "Copy email address". */
   label: string;
   className?: string;
   children?: React.ReactNode;
+  /** Skip the default pill look so `className` styles it from scratch. */
+  bare?: boolean;
 }) {
   const { copy, copied, failed } = useCopy();
   const ok = copied === value;
@@ -27,8 +30,9 @@ export function CopyButton({
       onClick={() => copy(value)}
       aria-label={label}
       className={cn(
-        "relative inline-flex items-center gap-2 rounded-full border border-line px-3.5 py-2 text-sm font-medium transition-colors hover:border-line-strong hover:bg-bg-2",
-        ok && "border-emerald-500/40 text-emerald-600 dark:text-emerald-400",
+        "relative inline-flex items-center gap-2 transition-colors",
+        !bare && "rounded-full border border-line px-3.5 py-2 text-sm font-medium hover:border-line-strong hover:bg-bg-2",
+        !bare && ok && "border-emerald-500/40 text-emerald-600 dark:text-emerald-400",
         className,
       )}
     >
