@@ -6,10 +6,11 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import type { Project } from "@/config/projects";
 import { BrandIcon } from "@/lib/brand-icons";
+import { ProjectStage, projectBuild } from "@/components/graphics/ProjectArt";
+import { gsap, mq, useGSAP } from "@/lib/gsap";
 import { ease, spring } from "@/lib/motion";
 import { ButtonLink } from "./Button";
 import { TechBadge } from "./Badge";
-import { ProjectArt } from "./ProjectArt";
 import { DevNote } from "./DevNote";
 import { cn } from "@/lib/utils";
 
@@ -19,15 +20,34 @@ const item = {
   show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: ease.out } },
 };
 
+/** The project's artwork, played through once when the dialog opens. */
+function PlayedStage({ project }: { project: Project }) {
+  const box = useRef<HTMLDivElement>(null);
+  useGSAP(
+    () => {
+      const mm = gsap.matchMedia();
+      mm.add(mq.motion, () => {
+        const stage = box.current?.querySelector("[data-stage]");
+        if (!stage) return;
+        const tl = gsap.timeline({ delay: 0.3 });
+        const cleanup = projectBuild(project)(stage, tl);
+        tl.duration(2.6);
+        return () => cleanup?.();
+      });
+      return () => mm.revert();
+    },
+    { scope: box, dependencies: [project.slug], revertOnUpdate: true },
+  );
+  return (
+    <div ref={box} className="relative aspect-[16/10] overflow-hidden rounded-xl">
+      <ProjectStage project={project} />
+    </div>
+  );
+}
+
 function Gallery({ project }: { project: Project }) {
   const [active, setActive] = useState(0);
-  if (project.images.length === 0) {
-    return (
-      <div className="aspect-[16/10] overflow-hidden rounded-xl border border-line">
-        <ProjectArt kind={project.art} />
-      </div>
-    );
-  }
+  if (project.images.length === 0) return <PlayedStage project={project} />;
   const img = project.images[active];
   return (
     <div>

@@ -2,159 +2,144 @@
 
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { useCallback, useRef, useState } from "react";
-import { SectionHeading } from "@/components/ui/SectionHeading";
+import { Fragment, useCallback, useRef, useState } from "react";
+import { projectBuild } from "@/components/graphics/ProjectArt";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import { ProjectModal } from "@/components/ui/ProjectModal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { projects } from "@/config/projects";
 import { site } from "@/config/site";
-import { useMedia } from "@/hooks/useMedia";
 import { BrandIcon } from "@/lib/brand-icons";
-import { gsap, useGSAP } from "@/lib/gsap";
+import { ScrollTrigger, gsap, mq, useGSAP } from "@/lib/gsap";
 import { fadeUp, inView } from "@/lib/motion";
-import { cn } from "@/lib/utils";
 
-/** Horizontal pinned showcase only where it fits: wide + tall enough screens that allow motion. */
-const HORIZONTAL_QUERY =
-  "(min-width: 1024px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)";
-
+/*
+ * A deck of sticky cards. Each card stops near the top of the screen and the next one slides
+ * up over it, while the covered card shrinks back and dims. Each card's artwork is drawn by scroll.
+ *
+ * The cards themselves are sticky, so scroll positions are read from the plain spacers between
+ * them ([data-stack-mark]): the bottom of spacer i is where card i starts in the page.
+ */
 export function Projects() {
   const root = useRef<HTMLElement>(null);
-  const pin = useRef<HTMLDivElement>(null);
-  const track = useRef<HTMLDivElement>(null);
-  const horizontal = useMedia(HORIZONTAL_QUERY);
   const [openSlug, setOpenSlug] = useState<string | null>(null);
   const open = projects.find((p) => p.slug === openSlug) ?? null;
   const close = useCallback(() => setOpenSlug(null), []);
 
   useGSAP(
     () => {
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduce) return;
+      const cards = gsap.utils.toArray<HTMLElement>("[data-stack-card]");
+      const marks = gsap.utils.toArray<HTMLElement>("[data-stack-mark]");
 
-      if (horizontal && pin.current && track.current) {
-        const t = track.current;
-        const distance = () => t.scrollWidth - window.innerWidth;
-        const tween = gsap.to(t, {
-          x: () => -distance(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: pin.current,
-            start: "top top",
-            end: () => `+=${distance()}`,
-            pin: true,
-            scrub: 0.8,
-            invalidateOnRefresh: true,
-            anticipatePin: 1,
-          },
+      // A card's height feeds its sticky `top`, so a card taller than the screen still shows its bottom.
+      let raf = 0;
+      const measure = () => cards.forEach((c) => c.style.setProperty("--h", `${c.offsetHeight}px`));
+      measure();
+      const ro = new ResizeObserver(() => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          measure();
+          ScrollTrigger.refresh();
         });
-        gsap.to("[data-progress]", {
-          scaleX: 1,
-          ease: "none",
-          scrollTrigger: { trigger: pin.current, start: "top top", end: () => `+=${distance()}`, scrub: true },
+      });
+      cards.forEach((c) => ro.observe(c));
+
+      const mm = gsap.matchMedia();
+      mm.add(mq.motion, () => {
+        const cleanups: (() => void)[] = [];
+        const last = cards.length - 1;
+        cards.forEach((card, i) => {
+          const stage = card.querySelector("[data-stage]");
+          if (stage) {
+            const tl = gsap.timeline({
+              scrollTrigger: {
+                trigger: marks[i],
+                start: "bottom 85%",
+                endTrigger: marks[i + 1],
+                // Done just as the next card comes in (for the last card: just before it settles).
+                end: i < last ? "bottom 80%" : "top 80%",
+                scrub: 0.5,
+              },
+            });
+            const cleanup = projectBuild(projects[i])(stage, tl);
+            if (cleanup) cleanups.push(cleanup);
+          }
+
+          if (i < last) {
+            const next = cards[i + 1];
+            const covered = {
+              trigger: marks[i + 1],
+              start: "bottom bottom",
+              end: () => `bottom ${parseFloat(getComputedStyle(next).top) || 0}px`,
+              scrub: true,
+              invalidateOnRefresh: true,
+            };
+            gsap.fromTo(
+              card.querySelector("[data-project-card]"),
+              { scale: 1 },
+              { scale: 0.92, transformOrigin: "50% 0%", ease: "none", scrollTrigger: covered },
+            );
+            gsap.fromTo(card.querySelector("[data-card-shade]"), { opacity: 0 }, { opacity: 0.55, ease: "none", scrollTrigger: covered });
+          }
         });
-        // Each image drifts against the horizontal movement.
-        gsap.utils.toArray<HTMLElement>("[data-project-card]").forEach((card) => {
-          const img = card.querySelector("[data-parallax]");
-          if (!img) return;
-          gsap.fromTo(
-            img,
-            { xPercent: -5 },
-            {
-              xPercent: 5,
-              ease: "none",
-              scrollTrigger: { trigger: card, containerAnimation: tween, start: "left right", end: "right left", scrub: true },
-            },
-          );
-        });
-      } else {
-        // Vertical layout: classic vertical image parallax.
-        gsap.utils.toArray<HTMLElement>("[data-project-card] [data-parallax]").forEach((img) => {
-          gsap.fromTo(
-            img,
-            { yPercent: -5 },
-            { yPercent: 5, ease: "none", scrollTrigger: { trigger: img, start: "top bottom", end: "bottom top", scrub: true } },
-          );
-        });
-      }
+        return () => cleanups.forEach((fn) => fn());
+      });
+
+      return () => {
+        ro.disconnect();
+        cancelAnimationFrame(raf);
+        mm.revert();
+      };
     },
-    { scope: root, dependencies: [horizontal], revertOnUpdate: true },
+    { scope: root },
   );
 
   return (
-    <section id="projects" ref={root} className="relative py-28 sm:py-40 lg:pb-0">
+    <section id="projects" ref={root} className="relative py-28 sm:py-40">
       <div className="container-page">
         <SectionHeading
           label="Projects"
           title="Selected work."
-          description={
-            horizontal
-              ? "Keep scrolling to move through the projects. Open any card for the full story."
-              : "Open any card for the full story, screenshots and links."
-          }
+          description="Open any project for the full story, screenshots and links."
           align="split"
-          className="lg:mb-4"
         />
-      </div>
 
-      <div ref={pin} className={cn(horizontal && "flex h-[100svh] flex-col justify-center overflow-hidden")}>
-        <div
-          ref={track}
-          className={cn(
-            horizontal
-              ? "flex w-max items-stretch gap-6 pl-[max(2.5rem,calc((100vw-80rem)/2+2.5rem))] pr-[10vw] will-change-transform"
-              : "container-page grid gap-6 md:grid-cols-2",
-          )}
-        >
+        <div className="relative">
           {projects.map((p, i) => (
-            <motion.div
-              key={p.slug}
-              className={cn(horizontal && "w-[min(500px,36vw)] shrink-0")}
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={inView}
-              data-reveal
-            >
-              <ProjectCard project={p} index={i} total={projects.length} onOpen={setOpenSlug} />
-            </motion.div>
+            <Fragment key={p.slug}>
+              <div data-stack-mark aria-hidden className={i === 0 ? "h-0" : "h-[10svh] lg:h-[28svh]"} />
+              <div data-stack-card className="stack-card" style={{ "--i": i } as React.CSSProperties}>
+                <ProjectCard project={p} index={i} total={projects.length} onOpen={setOpenSlug} />
+              </div>
+            </Fragment>
           ))}
-
-          <motion.a
-            href={site.github.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={cn(
-              "spotlight group flex flex-col justify-between rounded-tile bg-bg-2 p-8 transition-transform duration-700 ease-out-expo hover:-translate-y-1",
-              horizontal ? "w-[min(340px,26vw)] shrink-0" : "min-h-56",
-            )}
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="show"
-            viewport={inView}
-            data-reveal
-          >
-            <BrandIcon name="github" className="size-8" />
-            <div>
-              <p className="text-[28px] font-semibold tracking-[-0.02em]">More on GitHub</p>
-              <p className="mt-2 inline-flex items-center gap-1 text-[17px] text-accent">
-                github.com/{site.github.username}
-                <ArrowUpRight className="size-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </p>
-            </div>
-            <span className="sr-only">(opens in a new tab)</span>
-          </motion.a>
+          {/* Holds the finished deck on screen for a moment before it scrolls away. */}
+          <div data-stack-mark aria-hidden className="h-[6svh] lg:h-[14svh]" />
         </div>
 
-        {horizontal && (
-          <div className="container-page mt-10 flex items-center gap-4 text-[12px] font-medium text-muted">
-            <span>Scroll</span>
-            <div className="h-[3px] flex-1 overflow-hidden rounded-full bg-bg-3">
-              <div data-progress className="h-full origin-left scale-x-0 rounded-full bg-[linear-gradient(90deg,var(--brand-1),var(--brand-2),var(--brand-3))]" />
-            </div>
-            <span className="tabular-nums">{String(projects.length).padStart(2, "0")} projects</span>
-          </div>
-        )}
+        <motion.a
+          href={site.github.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group mt-6 flex items-center justify-between gap-6 rounded-tile bg-bg-2 px-6 py-6 transition-colors hover:bg-bg-3 sm:px-10 sm:py-9 lg:mt-10"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={inView}
+          data-reveal
+        >
+          <span className="flex min-w-0 items-center gap-4 sm:gap-6">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-fg text-bg sm:size-14">
+              <BrandIcon name="github" className="size-6 sm:size-7" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[21px] font-semibold tracking-[-0.02em] sm:text-[28px]">More on GitHub</span>
+              <span className="block truncate text-[15px] text-muted sm:text-[17px]">github.com/{site.github.username}</span>
+            </span>
+          </span>
+          <ArrowUpRight className="size-6 shrink-0 text-accent transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          <span className="sr-only">(opens in a new tab)</span>
+        </motion.a>
       </div>
 
       <ProjectModal project={open} onClose={close} />

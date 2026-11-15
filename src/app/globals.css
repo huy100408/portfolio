@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+/* Wide, tall-enough screens that allow motion: where the About scene pins its stage. */
+@custom-variant cap-wide (@media (min-width: 1024px) and (min-height: 640px) and (prefers-reduced-motion: no-preference));
 
 /* ---------------------------------------------------------------
    Design tokens
@@ -168,6 +170,15 @@ body {
   background-size: 56px 56px;
 }
 
+/* Faint dot grid for the black graphic stages. */
+@utility stage-dots {
+  background-image: radial-gradient(rgb(245 245 247 / 0.09) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(75% 75% at 50% 50%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(75% 75% at 50% 50%, #000 40%, transparent 100%);
+}
+
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -211,7 +222,13 @@ body {
   50% { opacity: 0.9; transform: scale(1.06); }
 }
 
+@keyframes caret {
+  0%, 45% { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+
 .animate-float { animation: float 5s ease-in-out infinite; }
+.caret-blink { animation: caret 1.05s steps(1) infinite; }
 .animate-drift { animation: drift 22s ease-in-out infinite; }
 .animate-spin-slow { animation: spin 28s linear infinite; }
 .animate-marquee { animation: marquee 40s linear infinite; }
@@ -358,6 +375,30 @@ body {
 }
 
 /* ---------------------------------------------------------------
+   About: until GSAP takes over the pinned stage, only the first
+   graphic shows (GSAP sets inline opacity on every layer).
+---------------------------------------------------------------- */
+[data-cap-desktop] [data-cap-art]:not([data-cap-art="0"]) {
+  opacity: 0;
+}
+
+/* ---------------------------------------------------------------
+   Projects: a deck of cards that stick and stack as you scroll.
+   Each card stops a little lower than the last, so the edges of earlier
+   cards stay visible. A card taller than the screen stops with its
+   bottom on screen instead (--h is its height, set from JS).
+---------------------------------------------------------------- */
+.stack-card {
+  position: sticky;
+  top: min(calc(3.75rem + var(--i, 0) * 0.625rem), calc(100svh - var(--h, 0px) - 1rem));
+}
+@media (width >= 64rem) {
+  .stack-card {
+    top: min(calc(4.5rem + var(--i, 0) * 0.875rem), calc(100svh - var(--h, 0px) - 1rem));
+  }
+}
+
+/* ---------------------------------------------------------------
    Intro loader: hidden immediately for returning visitors in this session
    (an inline script in <head> sets data-intro="seen" before first paint).
 ---------------------------------------------------------------- */
@@ -376,6 +417,7 @@ html[data-intro="seen"] #intro-loader {
   .animate-breathe,
   .text-shimmer,
   .eq-on .eq-bar,
+  .caret-blink,
   .glow-ring::before,
   .glow-ring::after {
     animation: none !important;
